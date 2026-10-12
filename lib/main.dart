@@ -70,13 +70,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     });
 
     try {
+      // Dispose previous controller first to free up TV hardware decoder
+      final oldController = _controller;
+      _controller = null;
+      await oldController?.dispose();
+
       VideoPlayerController controller;
 
-      // Check if local asset video exists
+      // Check if local asset video exists using lightweight AssetManifest
       bool assetExists = false;
       try {
-        await rootBundle.load(_assetVideoPath);
-        assetExists = true;
+        final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+        assetExists = manifest.listAssets().contains(_assetVideoPath);
       } catch (_) {
         assetExists = false;
       }
@@ -98,9 +103,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         await controller.dispose();
         return;
       }
-
-      // Dispose previous controller if any
-      await _controller?.dispose();
 
       setState(() {
         _controller = controller;
