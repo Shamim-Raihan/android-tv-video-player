@@ -23,6 +23,7 @@ class TvVideoApp extends StatelessWidget {
   @override
   Widget build(BuildContext ctx) {
     return const MaterialApp(
+      title: 'Video Uttara RPO',
       debugShowCheckedModeBanner: false,
       home: VideoPlayerScreen(),
     );
